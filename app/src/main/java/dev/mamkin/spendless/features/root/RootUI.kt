@@ -11,7 +11,6 @@ import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.extensions.compose.stack.Children
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import dev.mamkin.spendless.features.login.LoginUi
-import dev.mamkin.spendless.features.newpin.NewPinUI
 import dev.mamkin.spendless.features.registration.RegistrationUI
 
 
@@ -29,7 +28,6 @@ fun RootUi(component: RootComponent) {
         when(val instance = child.instance){
             is RootComponent.Child.Login -> LoginUi(instance.component)
             is RootComponent.Child.Registration -> RegistrationUI(instance.component)
-            is RootComponent.Child.NewPin -> NewPinUI(instance.component)
         }
     }
 }

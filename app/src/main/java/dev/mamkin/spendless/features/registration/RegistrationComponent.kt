@@ -1,20 +1,15 @@
 package dev.mamkin.spendless.features.registration
 
-import kotlinx.coroutines.flow.StateFlow
+import com.arkivanov.decompose.router.stack.ChildStack
+import com.arkivanov.decompose.value.Value
+import dev.mamkin.spendless.features.registration.newpin.NewPinComponent
+import dev.mamkin.spendless.features.registration.newuser.NewUserComponent
 
 interface RegistrationComponent {
-    val state: StateFlow<State>
-    fun onEvent(event: UiEvent)
+    val stack: Value<ChildStack<*, Child>>
 
-    data class State(
-        val username: String = "",
-        val buttonEnabled: Boolean = false
-    )
-
-
-    sealed interface UiEvent {
-        data class Input(val value: String) : UiEvent
-        data object Next : UiEvent
-        data object Login : UiEvent
+    sealed interface Child {
+        data class NewUser(val component: NewUserComponent) : Child
+        data class NewPin(val component: NewPinComponent) : Child
     }
 }

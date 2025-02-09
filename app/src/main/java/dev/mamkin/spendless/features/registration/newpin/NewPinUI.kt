@@ -1,4 +1,4 @@
-package dev.mamkin.spendless.features.newpin
+package dev.mamkin.spendless.features.registration.newpin
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -20,6 +20,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.mamkin.spendless.R
+import dev.mamkin.spendless.features.common.pincode.PinCodeComponent
+import dev.mamkin.spendless.features.common.pincode.PinCodeUI
 import dev.mamkin.spendless.ui.components.AppBackButton
 import dev.mamkin.spendless.ui.theme.SpendLessTheme
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -57,6 +59,10 @@ fun NewPinUI(component: NewPinComponent) {
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
+            Spacer(modifier = Modifier.height(36.dp))
+            PinCodeUI(
+                pinCodeComponent = component.pinCodeComponent,
+            )
         }
         AppBackButton(
             modifier = Modifier.align(Alignment.TopStart),
@@ -71,6 +77,14 @@ fun RegistrationUIPreview() {
     SpendLessTheme {
         NewPinUI(object : NewPinComponent {
             override val state = MutableStateFlow(NewPinComponent.State)
+            override val pinCodeComponent = object : PinCodeComponent {
+                override val state = MutableStateFlow(PinCodeComponent.State(pin = ""))
+                override fun onDigitPressed(digit: String) {
+                }
+
+                override fun onBackspacePressed() {
+                }
+            }
             override fun onEvent(event: NewPinComponent.UiEvent) {}
         })
     }
