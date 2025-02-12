@@ -13,7 +13,7 @@ import dev.mamkin.spendless.features.root.RootComponent.Child
 import kotlinx.serialization.Serializable
 
 class DefaultRootComponent(
-    context: ComponentContext
+    context: ComponentContext,
 ) : RootComponent, ComponentContext by context {
 
     private val navigation = StackNavigation<Config>()

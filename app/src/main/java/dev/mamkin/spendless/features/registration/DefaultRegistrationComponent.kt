@@ -5,7 +5,6 @@ import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
-import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.value.Value
 import dev.mamkin.spendless.features.registration.RegistrationComponent.Child.*
 import dev.mamkin.spendless.features.registration.newpin.DefaultNewPinComponent
@@ -15,7 +14,7 @@ import dev.mamkin.spendless.features.registration.newuser.NewUserComponent
 import kotlinx.serialization.Serializable
 
 class DefaultRegistrationComponent(
-    componentContext: ComponentContext
+    componentContext: ComponentContext,
 ) : RegistrationComponent, ComponentContext by componentContext {
 
     private val navigation = StackNavigation<Config>()
@@ -43,9 +42,7 @@ class DefaultRegistrationComponent(
     }
 
     private fun newUserComponent(componentContext: ComponentContext): NewUserComponent {
-        return DefaultNewUserComponent(componentContext, onNextClicked = {
-            navigation.pushNew(Config.NewPin)
-        })
+        return DefaultNewUserComponent(componentContext)
     }
 
     @Serializable

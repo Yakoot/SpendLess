@@ -1,6 +1,6 @@
 [versions]
 agp = "8.8.0"
-kotlin = "2.0.20"
+kotlin = "2.1.0"
 coreKtx = "1.15.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -10,7 +10,12 @@ activityCompose = "1.10.0"
 composeBom = "2025.01.01"
 serializationVersion = "2.1.0"
 serializationJsonVersion = "1.8.0"
-decomposeVersion = "3.3.0-alpha03"
+decomposeVersion = "3.3.0-beta01"
+essentyVersion = "2.5.0-beta01"
+roomVersion = "2.6.1"
+kspVersion = "2.1.0-1.0.29"
+koinBomVersion = "4.0.2"
+koinAnnotationsBomVersion = "1.4.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -32,10 +37,20 @@ kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 decompose = { group = "com.arkivanov.decompose", name = "decompose", version.ref = "decomposeVersion" }
 decompose-extensions-compose = { group = "com.arkivanov.decompose", name = "extensions-compose", version.ref = "decomposeVersion" }
 decompose-extensions-android = { group = "com.arkivanov.decompose", name = "extensions-android", version.ref = "decomposeVersion" }
+essenty-lifecycle-coroutines = { group = "com.arkivanov.essenty", name = "lifecycle-coroutines", version.ref = "essentyVersion" }
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "roomVersion" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "roomVersion" }
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomVersion" }
+koin-bom = { group = "io.insert-koin", name = "koin-bom", version.ref = "koinBomVersion" }
+koin-core = { module = "io.insert-koin:koin-core" }
+koin-android = { module = "io.insert-koin:koin-android" }
+koin-compose = { module = "io.insert-koin:koin-compose" }
+koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "serializationVersion" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "kspVersion" }
 

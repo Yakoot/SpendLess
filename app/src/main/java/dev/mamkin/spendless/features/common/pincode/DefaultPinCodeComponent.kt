@@ -9,6 +9,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
+private const val PIN_LENGTH = 5
+
 class DefaultPinCodeComponent(
     componentContext: ComponentContext,
     private val onPinCodeEntered: (String) -> Unit
@@ -25,9 +27,11 @@ class DefaultPinCodeComponent(
     override val state: StateFlow<State> = _state.asStateFlow()
 
     override fun onDigitPressed(digit: String) {
+        if (_state.value.pin.length == PIN_LENGTH) return
         _state.update { it.copy(pin = it.pin + digit) }
-        if (_state.value.pin.length == 5) {
+        if (_state.value.pin.length == PIN_LENGTH) {
             onPinCodeEntered(_state.value.pin)
+            _state.update { it.copy(pin = "") }
         }
     }
 
