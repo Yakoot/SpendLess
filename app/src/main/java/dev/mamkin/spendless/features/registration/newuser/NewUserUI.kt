@@ -25,7 +25,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -44,7 +47,12 @@ import kotlinx.coroutines.flow.receiveAsFlow
 fun NewUserUI(component: NewUserComponent) {
     val state by component.state.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
+    val focusRequester = remember { FocusRequester() }
+    // Optionally, get a reference to the keyboard controller
+    val keyboardController = LocalSoftwareKeyboardController.current
     LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+        keyboardController?.show()
         component.usernameError.receiveAsFlow().collect { error ->
             snackbarHostState.showSnackbar(error)
         }
@@ -81,9 +89,14 @@ fun NewUserUI(component: NewUserComponent) {
             )
             Spacer(modifier = Modifier.height(36.dp))
             RegistrationInput(
+                modifier = Modifier.focusRequester(focusRequester),
                 value = state.username,
                 placeholder = "username",
-                onValueChange = { component.onEvent(UiEvent.Input(it)) }
+                onValueChange = { component.onEvent(UiEvent.Input(it)) },
+                onDone = {
+                    focusRequester.freeFocus()
+                    component.onEvent(UiEvent.Next)
+                }
             )
             Spacer(modifier = Modifier.height(16.dp))
             AppButton(

@@ -11,5 +11,6 @@ interface RegistrationComponent {
     sealed interface Child {
         data class NewUser(val component: NewUserComponent) : Child
         data class NewPin(val component: NewPinComponent) : Child
+        data class RepeatPin(val component: NewPinComponent) : Child
     }
 }

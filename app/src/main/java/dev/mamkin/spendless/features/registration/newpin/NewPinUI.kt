@@ -20,14 +20,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.mamkin.spendless.R
-import dev.mamkin.spendless.features.common.pincode.PinCodeComponent
-import dev.mamkin.spendless.features.common.pincode.PinCodeUI
 import dev.mamkin.spendless.ui.components.AppBackButton
+import dev.mamkin.spendless.ui.components.PinBullets
+import dev.mamkin.spendless.ui.components.PinNumPad
 import dev.mamkin.spendless.ui.theme.SpendLessTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
-fun NewPinUI(component: NewPinComponent) {
+fun NewPinUI(
+    component: NewPinComponent,
+    title: String = "Create PIN",
+    description: String = "Use PIN to login to your account"
+) {
     val state by component.state.collectAsState()
 
     Box(
@@ -47,21 +51,31 @@ fun NewPinUI(component: NewPinComponent) {
             )
             Spacer(modifier = Modifier.height(20.dp))
             Text(
-                text = "Create PIN",
+                text = title,
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.headlineMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "Use PIN to login to your account",
+                text = description,
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Spacer(modifier = Modifier.height(36.dp))
-            PinCodeUI(
-                pinCodeComponent = component.pinCodeComponent,
+            PinBullets(
+                modifier = Modifier.height(56.dp),
+                value = state.pin
+            )
+            Spacer(modifier = Modifier.height(32.dp))
+            PinNumPad(
+                onDigitClick = {
+                    component.onEvent(NewPinComponent.UiEvent.DigitPressed(it))
+                },
+                onBackspaceClick = {
+                    component.onEvent(NewPinComponent.UiEvent.BackspacePressed)
+                }
             )
         }
         AppBackButton(
@@ -76,15 +90,7 @@ fun NewPinUI(component: NewPinComponent) {
 fun RegistrationUIPreview() {
     SpendLessTheme {
         NewPinUI(object : NewPinComponent {
-            override val state = MutableStateFlow(NewPinComponent.State)
-            override val pinCodeComponent = object : PinCodeComponent {
-                override val state = MutableStateFlow(PinCodeComponent.State(pin = ""))
-                override fun onDigitPressed(digit: String) {
-                }
-
-                override fun onBackspacePressed() {
-                }
-            }
+            override val state = MutableStateFlow(NewPinComponent.State())
             override fun onEvent(event: NewPinComponent.UiEvent) {}
         })
     }

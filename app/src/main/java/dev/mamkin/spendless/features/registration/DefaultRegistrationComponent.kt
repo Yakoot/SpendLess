@@ -5,6 +5,7 @@ import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
+import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.value.Value
 import dev.mamkin.spendless.features.registration.RegistrationComponent.Child.*
 import dev.mamkin.spendless.features.registration.newpin.DefaultNewPinComponent
@@ -26,23 +27,41 @@ class DefaultRegistrationComponent(
         initialConfiguration = Config.NewUser
     )
 
+    private var username: String? = null
+
     private fun createStack(
         config: Config,
         childContext: ComponentContext
     ) = when (config) {
         is Config.NewPin -> NewPin(newPinComponent(childContext))
         is Config.NewUser -> NewUser(newUserComponent(childContext))
+        is Config.RepeatPin -> RepeatPin(newPinComponent(childContext))
     }
 
 
     private fun newPinComponent(componentContext: ComponentContext): NewPinComponent {
         return DefaultNewPinComponent(componentContext, onBack = {
             navigation.pop()
+        }, onPinEnter = { pin ->
+            println("New pin: $pin")
+            navigation.pushNew(Config.RepeatPin)
+        })
+    }
+
+    private fun repeatPinComponent(componentContext: ComponentContext): NewPinComponent {
+        return DefaultNewPinComponent(componentContext, onBack = {
+            navigation.pop()
+        }, onPinEnter = { pin ->
+            println("New pin: $pin")
         })
     }
 
     private fun newUserComponent(componentContext: ComponentContext): NewUserComponent {
-        return DefaultNewUserComponent(componentContext)
+        return DefaultNewUserComponent(componentContext, onNext =
+        { newUsername ->
+            username = newUsername
+            navigation.pushNew(Config.NewPin)
+        })
     }
 
     @Serializable
@@ -51,5 +70,7 @@ class DefaultRegistrationComponent(
         data object NewUser: Config
         @Serializable
         data object NewPin: Config
+        @Serializable
+        data object RepeatPin: Config
     }
 }

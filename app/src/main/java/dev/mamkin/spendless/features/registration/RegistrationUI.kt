@@ -24,7 +24,16 @@ fun RegistrationUI(component: RegistrationComponent) {
             .windowInsetsPadding(WindowInsets.systemBars)
     ){ child ->
         when(val instance = child.instance){
-            is RegistrationComponent.Child.NewPin -> NewPinUI(instance.component)
+            is RegistrationComponent.Child.NewPin -> NewPinUI(
+                instance.component,
+                title = "Create PIN",
+                description = "Use PIN to login to your account"
+            )
+            is RegistrationComponent.Child.RepeatPin -> NewPinUI(
+                instance.component,
+                title = "Repeat Your PIN",
+                description = "Enter your PIN again"
+            )
             is RegistrationComponent.Child.NewUser -> NewUserUI(instance.component)
         }
     }

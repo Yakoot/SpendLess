@@ -18,6 +18,7 @@ import kotlin.getValue
 
 class DefaultNewUserComponent(
     componentContext: ComponentContext,
+    val onNext: (String) -> Unit
 ) : NewUserComponent, ComponentContext by componentContext, KoinComponent {
     private val userRepository: UserRepository by inject()
 
@@ -34,14 +35,34 @@ class DefaultNewUserComponent(
     }
 
     private fun onNextClicked() {
+        if (_state.value.buttonEnabled.not()) return
         val username = _state.value.username
         scope.launch {
+            if (!validateUsername(username)) return@launch
             val exists = withContext(Dispatchers.IO) {
                 userRepository.isUsernameExists(username)
             }
             if (exists) {
                 usernameError.send("Username already exists")
+                _state.update { it.copy(buttonEnabled = false) }
+            } else {
+                onNext(username)
             }
+        }
+    }
+
+    private suspend fun validateUsername(username: String): Boolean {
+        val regex = "^[a-zA-Z0-9]+$".toRegex()
+        if (username.length < 3 || username.length > 14) {
+            usernameError.send("Username should be 3-14 characters long")
+            _state.update { it.copy(buttonEnabled = false) }
+            return false
+        } else if (!username.matches(regex)) {
+            usernameError.send("Username should contain only letters and numbers")
+            _state.update { it.copy(buttonEnabled = false) }
+            return false
+        } else {
+            return true
         }
     }
 
@@ -50,5 +71,4 @@ class DefaultNewUserComponent(
         UiEvent.Next -> onNextClicked()
         UiEvent.Login -> {}
     }
-
 }
