@@ -18,6 +18,8 @@ import kotlin.getValue
 
 class DefaultNewUserComponent(
     componentContext: ComponentContext,
+    val showError: (String) -> Unit,
+    val hideError: () -> Unit,
     val onNext: (String) -> Unit
 ) : NewUserComponent, ComponentContext by componentContext, KoinComponent {
     private val userRepository: UserRepository by inject()
@@ -25,12 +27,11 @@ class DefaultNewUserComponent(
     private val _state = MutableStateFlow(State())
     override val state = _state.asStateFlow()
 
-    override val usernameError = Channel<String>(Channel.BUFFERED)
-
     private val scope = coroutineScope()
 
 
     private fun onUsernameChanged(username: String) {
+        hideError()
         _state.update { it.copy(username = username, buttonEnabled = username.isNotBlank()) }
     }
 
@@ -43,7 +44,7 @@ class DefaultNewUserComponent(
                 userRepository.isUsernameExists(username)
             }
             if (exists) {
-                usernameError.send("Username already exists")
+                showError("Username already exists")
                 _state.update { it.copy(buttonEnabled = false) }
             } else {
                 onNext(username)
@@ -54,11 +55,11 @@ class DefaultNewUserComponent(
     private suspend fun validateUsername(username: String): Boolean {
         val regex = "^[a-zA-Z0-9]+$".toRegex()
         if (username.length < 3 || username.length > 14) {
-            usernameError.send("Username should be 3-14 characters long")
+            showError("Username should be 3-14 characters long")
             _state.update { it.copy(buttonEnabled = false) }
             return false
         } else if (!username.matches(regex)) {
-            usernameError.send("Username should contain only letters and numbers")
+            showError("Username should contain only letters and numbers")
             _state.update { it.copy(buttonEnabled = false) }
             return false
         } else {

@@ -1,4 +1,4 @@
-package dev.mamkin.spendless.features.registration.newpin
+package dev.mamkin.spendless.features.pincode
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -28,7 +28,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
 fun NewPinUI(
-    component: NewPinComponent,
+    component: PinCodeComponent,
     title: String = "Create PIN",
     description: String = "Use PIN to login to your account"
 ) {
@@ -71,16 +71,16 @@ fun NewPinUI(
             Spacer(modifier = Modifier.height(32.dp))
             PinNumPad(
                 onDigitClick = {
-                    component.onEvent(NewPinComponent.UiEvent.DigitPressed(it))
+                    component.onEvent(PinCodeComponent.UiEvent.DigitPressed(it))
                 },
                 onBackspaceClick = {
-                    component.onEvent(NewPinComponent.UiEvent.BackspacePressed)
+                    component.onEvent(PinCodeComponent.UiEvent.BackspacePressed)
                 }
             )
         }
         AppBackButton(
             modifier = Modifier.align(Alignment.TopStart),
-            onClick = { component.onEvent(NewPinComponent.UiEvent.Back) }
+            onClick = { component.onEvent(PinCodeComponent.UiEvent.Back) }
         )
     }
 }
@@ -89,9 +89,9 @@ fun NewPinUI(
 @Composable
 fun RegistrationUIPreview() {
     SpendLessTheme {
-        NewPinUI(object : NewPinComponent {
-            override val state = MutableStateFlow(NewPinComponent.State())
-            override fun onEvent(event: NewPinComponent.UiEvent) {}
+        NewPinUI(object : PinCodeComponent {
+            override val state = MutableStateFlow(PinCodeComponent.State())
+            override fun onEvent(event: PinCodeComponent.UiEvent) {}
         })
     }
 }

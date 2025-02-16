@@ -1,16 +1,13 @@
-package dev.mamkin.spendless.features.registration.newuser
+package dev.mamkin.spendless.features.registration.preferences
 
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.StateFlow
 
-interface NewUserComponent {
+interface PreferencesComponent {
     val state: StateFlow<State>
     fun onEvent(event: UiEvent)
 
     data class State(
-        val username: String = "",
-        val buttonEnabled: Boolean = false,
-        val usernameError: String? = null
+        val expensesFormat: String = "",
     )
 
 

@@ -1,8 +1,8 @@
-package dev.mamkin.spendless.features.registration.newpin
+package dev.mamkin.spendless.features.pincode
 
 import kotlinx.coroutines.flow.StateFlow
 
-interface NewPinComponent {
+interface PinCodeComponent {
     val state: StateFlow<State>
 
     data class State(
