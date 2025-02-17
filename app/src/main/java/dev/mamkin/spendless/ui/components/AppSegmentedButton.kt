@@ -12,20 +12,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import dev.mamkin.spendless.ui.theme.AppColors
 import dev.mamkin.spendless.ui.theme.SpendLessTheme
 
 @Composable
-fun SegmentedControl(
+fun AppSegmentedButton(
     modifier: Modifier = Modifier,
     items: List<String>,
     defaultSelectedItemIndex: Int = 0,
-    useFixedWidth: Boolean = false,
-    itemWidth: Dp = 120.dp,
-    cornerRadius: Int = 24,
     onItemSelection: (selectedItemIndex: Int) -> Unit
 ) {
     val selectedIndex = remember { mutableStateOf(defaultSelectedItemIndex) }
@@ -34,46 +32,44 @@ fun SegmentedControl(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(38.dp),
+            .height(48.dp),
         colors = CardDefaults.cardColors(
             containerColor = if (selectedIndex.value == itemIndex.value) {
-
-                MaterialTheme.colorScheme.background
+                MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.08f)
             } else {
-
-                MaterialTheme.colorScheme.secondary
+                MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.08f)
             }
         ),
-        shape = RoundedCornerShape(cornerRadius)
+        shape = RoundedCornerShape(16.dp)
     ) {
         Row(
             modifier = modifier
                 .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.secondary),
+                .padding(4.dp)
+                .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.08f)),
             horizontalArrangement = Arrangement.Center
         ) {
             items.forEachIndexed { index, item ->
                 itemIndex.value = index
                 Card(
                     modifier = modifier
-                        .weight(1f)
-                        .padding(2.dp),
+                        .weight(1f),
                     onClick = {
                         selectedIndex.value = index
                         onItemSelection(selectedIndex.value)
                     },
                     colors = CardDefaults.cardColors(
                         containerColor = if (selectedIndex.value == index) {
-                            MaterialTheme.colorScheme.background
+                            MaterialTheme.colorScheme.surfaceContainerLowest
                         } else {
-                            MaterialTheme.colorScheme.secondary
+                            Color.Transparent
                         },
                         contentColor = if (selectedIndex.value == index)
-                            MaterialTheme.colorScheme.scrim
+                            MaterialTheme.colorScheme.primary
                         else
-                            MaterialTheme.colorScheme.onSecondary
+                            AppColors.OnPrimaryFixed
                     ),
-                    shape = RoundedCornerShape(16.dp),
+                    shape = RoundedCornerShape(12.dp),
                 ) {
                     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center){
                         Text(
@@ -100,7 +96,7 @@ fun PreviewSegmentedToggle() {
 
     SpendLessTheme {
         Surface {
-            SegmentedControl(
+            AppSegmentedButton(
                 items = listOf("Option 1", "Option 2", "Option 3", "Option 4"),
                 defaultSelectedItemIndex = selectedIndex,
                 onItemSelection = { selectedIndex = it }
