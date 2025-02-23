@@ -16,6 +16,7 @@ import com.arkivanov.decompose.extensions.compose.stack.Children
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import dev.mamkin.spendless.features.pincode.NewPinUI
 import dev.mamkin.spendless.features.registration.newuser.NewUserUI
+import dev.mamkin.spendless.features.registration.preferences.PreferencesUI
 import dev.mamkin.spendless.ui.components.ErrorSnackbar
 
 @Composable
@@ -44,6 +45,7 @@ fun RegistrationUI(component: RegistrationComponent) {
                     description = "Enter your PIN again"
                 )
                 is RegistrationComponent.Child.NewUser -> NewUserUI(instance.component)
+                is RegistrationComponent.Child.Preferences -> PreferencesUI(instance.component)
             }
         }
         error?.let {

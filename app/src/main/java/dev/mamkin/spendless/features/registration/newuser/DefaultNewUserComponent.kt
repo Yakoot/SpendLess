@@ -6,7 +6,6 @@ import dev.mamkin.spendless.data.repository.UserRepository
 import dev.mamkin.spendless.features.registration.newuser.NewUserComponent.State
 import dev.mamkin.spendless.features.registration.newuser.NewUserComponent.UiEvent
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -20,7 +19,8 @@ class DefaultNewUserComponent(
     componentContext: ComponentContext,
     val showError: (String) -> Unit,
     val hideError: () -> Unit,
-    val onNext: (String) -> Unit
+    val onNext: (String) -> Unit,
+    val navigateToLogin: () -> Unit
 ) : NewUserComponent, ComponentContext by componentContext, KoinComponent {
     private val userRepository: UserRepository by inject()
 
@@ -70,6 +70,8 @@ class DefaultNewUserComponent(
     override fun onEvent(event: UiEvent) = when (event) {
         is UiEvent.Input -> onUsernameChanged(event.value)
         UiEvent.Next -> onNextClicked()
-        UiEvent.Login -> {}
+        UiEvent.Login -> {
+            navigateToLogin()
+        }
     }
 }

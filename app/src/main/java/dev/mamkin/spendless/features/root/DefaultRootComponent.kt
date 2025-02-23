@@ -5,7 +5,9 @@ import com.arkivanov.decompose.DelicateDecomposeApi
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
+import com.arkivanov.decompose.router.stack.replaceCurrent
 import com.arkivanov.decompose.value.Value
+import dev.mamkin.spendless.features.login.DefaultLoginComponent
 import dev.mamkin.spendless.features.login.LoginComponent
 import dev.mamkin.spendless.features.registration.DefaultRegistrationComponent
 import dev.mamkin.spendless.features.registration.RegistrationComponent
@@ -34,12 +36,18 @@ class DefaultRootComponent(
     }
 
     private fun loginComponent(componentContext: ComponentContext): LoginComponent {
-        return LoginComponent(componentContext)
+        return DefaultLoginComponent(componentContext, onClickRegister = {
+            navigation.replaceCurrent(Config.Registration)
+        })
     }
 
     @OptIn(DelicateDecomposeApi::class)
     private fun registrationComponent(componentContext: ComponentContext): RegistrationComponent {
-        return DefaultRegistrationComponent(componentContext)
+        return DefaultRegistrationComponent(componentContext,
+            navigateToLogin = {
+                navigation.replaceCurrent(Config.Login)
+            }
+        )
     }
 
 

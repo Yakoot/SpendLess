@@ -5,6 +5,7 @@ import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
+import com.arkivanov.decompose.router.stack.popWhile
 import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
@@ -14,6 +15,8 @@ import dev.mamkin.spendless.features.pincode.PinCodeComponent
 import dev.mamkin.spendless.features.registration.RegistrationComponent.Child.*
 import dev.mamkin.spendless.features.registration.newuser.DefaultNewUserComponent
 import dev.mamkin.spendless.features.registration.newuser.NewUserComponent
+import dev.mamkin.spendless.features.registration.preferences.DefaultPreferencesComponent
+import dev.mamkin.spendless.features.registration.preferences.PreferencesComponent
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -24,6 +27,7 @@ import kotlin.getValue
 
 class DefaultRegistrationComponent(
     componentContext: ComponentContext,
+    val navigateToLogin: () -> Unit
 ) : RegistrationComponent, ComponentContext by componentContext, KoinComponent {
     private val userRepository: UserRepository by inject()
 
@@ -52,6 +56,7 @@ class DefaultRegistrationComponent(
         is Config.NewPin -> NewPin(newPinComponent(childContext))
         is Config.NewUser -> NewUser(newUserComponent(childContext))
         is Config.RepeatPin -> RepeatPin(repeatPinComponent(childContext))
+        is Config.Preferences -> Preferences(preferencesComponent(childContext))
     }
 
 
@@ -64,6 +69,7 @@ class DefaultRegistrationComponent(
         })
     }
 
+
     private fun repeatPinComponent(componentContext: ComponentContext): PinCodeComponent {
         return DefaultPinCodeComponent(componentContext,
             onBack = {
@@ -73,12 +79,21 @@ class DefaultRegistrationComponent(
                 if (this.pin != pin) {
                     _error.value = "PINs don’t match. Try again"
                 } else {
-                    createUser(username!!, pin)
+                    navigation.pushNew(Config.Preferences)
                 }
             },
             hideError = {
                 _error.value = null
             })
+    }
+
+
+    private fun preferencesComponent(componentContext: ComponentContext): PreferencesComponent {
+        return DefaultPreferencesComponent(componentContext, onBack = {
+            navigation.popWhile { topOfStack: Config -> topOfStack !is Config.NewPin }
+        }, onSave = { preferences ->
+            createUser(username!!, pin!!, preferences)
+        })
     }
 
     private fun newUserComponent(componentContext: ComponentContext): NewUserComponent {
@@ -90,12 +105,12 @@ class DefaultRegistrationComponent(
             _error.value = it
         }, hideError = {
             _error.value = null
-        })
+        }, navigateToLogin = navigateToLogin)
     }
 
-    private fun createUser(username: String, pin: String) {
+    private fun createUser(username: String, pin: String, preferences: dev.mamkin.spendless.features.registration.preferences.Preferences) {
         scope.launch {
-            userRepository.createUser(username, pin)
+            userRepository.createUser(username, pin, preferences)
         }
     }
 
@@ -109,5 +124,8 @@ class DefaultRegistrationComponent(
 
         @Serializable
         data object RepeatPin : Config
+
+        @Serializable
+        data object Preferences : Config
     }
 }

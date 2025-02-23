@@ -11,6 +11,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
@@ -27,21 +28,14 @@ fun AppTextField(
     supportingText: String? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
+    visualTransformation: VisualTransformation = VisualTransformation.None
 ) {
-    val errorColor = MaterialTheme.colorScheme.error
-    val disabledColor = MaterialTheme.colorScheme.onSurface
-    val normalColor = MaterialTheme.colorScheme.onSurface
-
     val textColor = if (isEnabled) {
         if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface
     } else {
         MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
     }
 
-    val placeholderColor = when {
-        !isEnabled -> disabledColor
-        else -> normalColor
-    }
     Column(modifier = modifier) {
         label?.let {
             Text(
@@ -62,10 +56,12 @@ fun AppTextField(
                     )
                 }
             },
+            maxLines = 1,
             isError = isError,
             shape = RoundedCornerShape(16.dp),
             keyboardOptions = keyboardOptions,
             keyboardActions = keyboardActions,
+            visualTransformation = visualTransformation,
             modifier = Modifier
                 .fillMaxWidth()
         )
