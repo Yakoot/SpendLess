@@ -2,6 +2,7 @@ package dev.mamkin.spendless.features.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -36,6 +37,7 @@ import dev.mamkin.spendless.features.login.LoginComponent.UiEvent
 import dev.mamkin.spendless.ui.components.AppButton
 import dev.mamkin.spendless.ui.components.AppButtonType
 import dev.mamkin.spendless.ui.components.AppTextField
+import dev.mamkin.spendless.ui.components.ErrorSnackbar
 
 @Composable
 fun LoginUi(component: LoginComponent) {
@@ -52,82 +54,95 @@ fun LoginUi(component: LoginComponent) {
         keyboardController?.show()
     }
 
-
-    Column(
+    Box(
         modifier = Modifier
-            .background(color = MaterialTheme.colorScheme.background)
-            .padding(vertical = 36.dp, horizontal = 26.dp)
-            .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .background(MaterialTheme.colorScheme.background)
+            .fillMaxSize()
     ) {
-        Image(
-            contentDescription = "Login",
-            painter = painterResource(id = R.drawable.logo)
-        )
-        Spacer(modifier = Modifier.height(20.dp))
-        Text(
-            text = "Welcome back!",
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.onSurface
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = "Enter you login details",
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-        Spacer(modifier = Modifier.height(36.dp))
-        AppTextField(
-            modifier = Modifier.focusRequester(usernameFocusRequester),
-            value = state.username,
-            placeholder = "Username",
-            onValueChange = { component.onEvent(UiEvent.UsernameInput(it)) },
-            keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Next,
-                keyboardType = KeyboardType.Email
-            ),
-            keyboardActions = KeyboardActions(
-                onNext = { pinFocusRequester.requestFocus() }
+        Column(
+            modifier = Modifier
+                .background(color = MaterialTheme.colorScheme.background)
+                .padding(vertical = 36.dp, horizontal = 26.dp)
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(
+                contentDescription = "Login",
+                painter = painterResource(id = R.drawable.logo)
             )
-        )
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(20.dp))
+            Text(
+                text = "Welcome back!",
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.headlineMedium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "Enter you login details",
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(modifier = Modifier.height(36.dp))
+            AppTextField(
+                modifier = Modifier.focusRequester(usernameFocusRequester),
+                value = state.username,
+                placeholder = "Username",
+                onValueChange = { component.onEvent(UiEvent.UsernameInput(it)) },
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Next,
+                    keyboardType = KeyboardType.Email
+                ),
+                keyboardActions = KeyboardActions(
+                    onNext = { pinFocusRequester.requestFocus() }
+                )
+            )
+            Spacer(modifier = Modifier.height(16.dp))
 
-        AppTextField(
-            modifier = Modifier.focusRequester(pinFocusRequester),
-            value = state.pin,
-            placeholder = "PIN",
-            onValueChange = { component.onEvent(UiEvent.PinInput(it)) },
-            visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Done,
-                keyboardType = KeyboardType.Number
-            ),
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    component.onEvent(UiEvent.Login)
-                    keyboardController?.hide()
-                }
+            AppTextField(
+                modifier = Modifier.focusRequester(pinFocusRequester),
+                value = state.pin,
+                placeholder = "PIN",
+                onValueChange = { component.onEvent(UiEvent.PinInput(it)) },
+                visualTransformation = PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Done,
+                    keyboardType = KeyboardType.Number
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        component.onEvent(UiEvent.Login)
+                        keyboardController?.hide()
+                    }
+                )
             )
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        AppButton(
-            modifier = Modifier.fillMaxWidth(),
-            type = AppButtonType.Filled,
-            text = "Log in",
-            rightIcon = {
-                Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null)
-            },
-            enabled = state.buttonEnabled,
-            onClick = { component.onEvent(UiEvent.Login) }
-        )
-        Spacer(modifier = Modifier.height(28.dp))
-        AppButton(
-            modifier = Modifier.fillMaxWidth(),
-            type = AppButtonType.Text,
-            text = "New to SpendLess?",
-            onClick = { component.onEvent(UiEvent.Register) }
-        )
+            Spacer(modifier = Modifier.height(16.dp))
+            AppButton(
+                modifier = Modifier.fillMaxWidth(),
+                type = AppButtonType.Filled,
+                text = "Log in",
+                rightIcon = {
+                    Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null)
+                },
+                enabled = state.buttonEnabled,
+                onClick = { component.onEvent(UiEvent.Login) }
+            )
+            Spacer(modifier = Modifier.height(28.dp))
+            AppButton(
+                modifier = Modifier.fillMaxWidth(),
+                type = AppButtonType.Text,
+                text = "New to SpendLess?",
+                onClick = { component.onEvent(UiEvent.Register) }
+            )
+        }
+        state.error?.let {
+            ErrorSnackbar(
+                message = it,
+                modifier = Modifier.align(Alignment.BottomCenter)
+            )
+        }
     }
+
+
 }

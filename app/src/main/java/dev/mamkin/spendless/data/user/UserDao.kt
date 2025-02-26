@@ -10,7 +10,7 @@ import androidx.room.Query
 interface UserDao {
 
     @Query("SELECT * FROM user WHERE username LIKE :first LIMIT 1")
-    fun findByName(first: String): User
+    fun findByName(first: String): User?
 
     @Delete
     fun delete(user: User)

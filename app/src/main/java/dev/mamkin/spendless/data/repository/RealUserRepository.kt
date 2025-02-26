@@ -17,4 +17,8 @@ class RealUserRepository(
         val generatedId = userDao.insertUser(newUser)
         return newUser.copy(id = generatedId.toInt())
     }
+
+    override suspend fun findUserByUsername(username: String): User? {
+        return userDao.findByName(username)
+    }
 }

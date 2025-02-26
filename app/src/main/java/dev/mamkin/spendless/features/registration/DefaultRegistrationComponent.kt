@@ -9,6 +9,7 @@ import com.arkivanov.decompose.router.stack.popWhile
 import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
+import dev.mamkin.spendless.data.PinCodeEncryption
 import dev.mamkin.spendless.data.repository.UserRepository
 import dev.mamkin.spendless.features.pincode.DefaultPinCodeComponent
 import dev.mamkin.spendless.features.pincode.PinCodeComponent
@@ -30,6 +31,7 @@ class DefaultRegistrationComponent(
     val navigateToLogin: () -> Unit
 ) : RegistrationComponent, ComponentContext by componentContext, KoinComponent {
     private val userRepository: UserRepository by inject()
+    private val pinCodeEncryption: PinCodeEncryption by inject()
 
     private val navigation = StackNavigation<Config>()
     override val stack: Value<ChildStack<*, RegistrationComponent.Child>> = childStack(
@@ -110,7 +112,8 @@ class DefaultRegistrationComponent(
 
     private fun createUser(username: String, pin: String, preferences: dev.mamkin.spendless.features.registration.preferences.Preferences) {
         scope.launch {
-            userRepository.createUser(username, pin, preferences)
+            val encryptedPin = pinCodeEncryption.encryptPin(pin)
+            userRepository.createUser(username, encryptedPin, preferences)
         }
     }
 

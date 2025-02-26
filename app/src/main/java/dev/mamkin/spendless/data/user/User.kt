@@ -13,7 +13,7 @@ import dev.mamkin.spendless.features.registration.preferences.ThousandsSeparator
 data class User(
     @PrimaryKey val id: Int = 0,
     @ColumnInfo(name = "username") val username: String,
-    @ColumnInfo(name = "pin") val pin: String?,
+    @ColumnInfo(name = "pin") val pin: String,
     @ColumnInfo(name = "expensesFormat") val expensesFormat: ExpensesFormat,
     @ColumnInfo(name = "currency") val currency: Currency,
     @ColumnInfo(name = "decimalSeparator") val decimalSeparator: DecimalSeparator,
