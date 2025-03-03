@@ -1,5 +1,8 @@
 package dev.mamkin.spendless.ui.theme
 
+import androidx.compose.foundation.background
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
 object AppColors {
@@ -32,3 +35,14 @@ object AppColors {
     val OnSurfaceVariant      = Color(0xFF44474B)
     val Outline               = Color(0xFF75777B)
 }
+
+fun Modifier.gradientBackground(
+    colors: List<Color> = listOf(
+        AppColors.Primary,
+        AppColors.OnPrimaryFixed,
+    )
+): Modifier = this.background(
+    Brush.linearGradient(
+        colors = colors,
+    )
+)

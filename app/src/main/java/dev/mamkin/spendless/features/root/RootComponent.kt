@@ -2,6 +2,7 @@ package dev.mamkin.spendless.features.root
 
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
+import dev.mamkin.spendless.features.dashboard.DashboardComponent
 import dev.mamkin.spendless.features.login.LoginComponent
 import dev.mamkin.spendless.features.registration.RegistrationComponent
 
@@ -11,5 +12,6 @@ interface RootComponent {
     sealed interface Child {
         data class Login(val component: LoginComponent) : Child
         data class Registration(val component: RegistrationComponent) : Child
+        data class Dashboard(val component: DashboardComponent) : Child
     }
 }

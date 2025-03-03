@@ -143,6 +143,4 @@ fun LoginUi(component: LoginComponent) {
             )
         }
     }
-
-
 }

@@ -28,7 +28,8 @@ import kotlin.getValue
 
 class DefaultRegistrationComponent(
     componentContext: ComponentContext,
-    val navigateToLogin: () -> Unit
+    val navigateToLogin: () -> Unit,
+    val navigateToDashboard: () -> Unit
 ) : RegistrationComponent, ComponentContext by componentContext, KoinComponent {
     private val userRepository: UserRepository by inject()
     private val pinCodeEncryption: PinCodeEncryption by inject()
@@ -114,6 +115,7 @@ class DefaultRegistrationComponent(
         scope.launch {
             val encryptedPin = pinCodeEncryption.encryptPin(pin)
             userRepository.createUser(username, encryptedPin, preferences)
+            navigateToDashboard()
         }
     }
 

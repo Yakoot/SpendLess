@@ -16,7 +16,8 @@ import kotlin.getValue
 
 class DefaultLoginComponent(
     componentContext: ComponentContext,
-    val onClickRegister: () -> Unit
+    val onClickRegister: () -> Unit,
+    val navigateToDashboard: () -> Unit
 ) : LoginComponent, ComponentContext by componentContext, KoinComponent {
     private val userRepository: UserRepository by inject()
     private val pinCodeEncryption: PinCodeEncryption by inject()
@@ -67,6 +68,8 @@ class DefaultLoginComponent(
             }
             if (!pinCodeEncryption.verifyPin(user.pin, pin)) {
                 _state.update { state -> state.copy(error = "PIN is incorrect") }
+            } else {
+                navigateToDashboard()
             }
         }
     }
