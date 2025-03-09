@@ -50,7 +50,7 @@ fun DashboardUI(component: DashboardComponent) {
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
+            Text("test")
         }
     }
 }
